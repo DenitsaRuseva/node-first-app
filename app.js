@@ -1,10 +1,21 @@
-const http = require('http');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
 
-const routs = require('./routs');
+const adminRouts = require('./routs/admin');
+const routs = require('./routs/shop');
 
 
-const server = http.createServer(routs)
-    
+const app = express();
 
-server.listen(3000);
+app.use(bodyParser.urlencoded({extended: false}));
+
+app.use('/admin', adminRouts);
+app.use(routs);
+
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, 'views', '404.html'));
+})
+
+app.listen(3000);
 
