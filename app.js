@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const adminData = require('./routs/admin');
-const routs = require('./routs/shop');
+const adminRoutes = require('./routes/admin');
+const routes = require('./routes/shop');
 
 
 const app = express();
@@ -15,8 +15,8 @@ app.set('views', 'views'); //I do not need this, because by default node will se
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/admin', adminData.routs);
-app.use(routs);
+app.use('/admin', adminRoutes);
+app.use(routes);
 
 app.use((req, res) => {
     // res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
