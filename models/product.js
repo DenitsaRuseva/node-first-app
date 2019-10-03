@@ -43,7 +43,6 @@ module.exports = class Product {
                 });
             });
         };
-       
     };
 
     static fetchAll(cb){
@@ -56,4 +55,18 @@ module.exports = class Product {
             cb(product);
         });
     };
+
+    static deleteById(id, cb){
+        this.fetchAll(products => {
+            let newProducts = [...products];
+            newProducts = newProducts.filter(p => p.id != id);
+            fs.writeFile(p, JSON.stringify(newProducts), err => {
+                if(err){
+                console.log(err, 'In deleteById Product method');
+                } else{
+                    cb();
+                }
+            })
+        })
+    }
 };
