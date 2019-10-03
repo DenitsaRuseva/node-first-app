@@ -16,7 +16,8 @@ const getProductsFromFile = cb => {
 };
 
 module.exports = class Product {
-    constructor(title, imageUrl, price, description){
+    constructor(id, title, imageUrl, price, description){
+        this.id = id,
         this.title = title,
         this.imageUrl = imageUrl,
         this.price = price,
@@ -24,13 +25,25 @@ module.exports = class Product {
     }
 
     save(){
-        this.id = Math.random().toString();
-        getProductsFromFile(products => {
-            products.push(this);
-            fs.writeFile(p, JSON.stringify(products), error => {
-                console.log(error);
+        if(!this.id){
+            this.id = Math.random().toString();
+            getProductsFromFile(products => {
+                products.push(this);
+                fs.writeFile(p, JSON.stringify(products), error => {
+                    console.log(error, 'In save Product method if block');
+                });
             });
-        });
+        } else{
+            getProductsFromFile(products => {
+                const updatedProductIndex = products.findIndex(p => p.id === this.id);
+                let updatedProducts = [...products];
+                updatedProducts[updatedProductIndex] = this;
+                fs.writeFile(p, JSON.stringify(updatedProducts), err => {
+                    console.log(err, 'In save Product method else block');
+                });
+            });
+        };
+       
     };
 
     static fetchAll(cb){

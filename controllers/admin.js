@@ -1,16 +1,36 @@
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res) => {
-    res.render('admin/add-product', {
-        pageTitle: 'Add Products',
-        path: '/admin/add-product'
+    res.render('admin/edit-product', {
+        pageTitle: 'Add Product',
+        path: '/admin/add-product',
+        editing: false
     })
 };
 
 exports.postAddProduct = (req, res) => {
-    const product = new Product(req.body.title, req.body.imageUrl, req.body.price, req.body.description);
+    const product = new Product(null, req.body.title, req.body.imageUrl, req.body.price, req.body.description);
     product.save();
     res.redirect('/');
+};
+
+exports.getEditProduct = (req, res) => {
+    const productId = req.params.productId;
+    Product.findById(productId, product => {
+        res.render('admin/edit-product', { 
+            pageTitle: 'Edit Product',
+            path: '/edit-product',
+            editing: true, 
+            product: product
+        });
+    });
+};
+
+exports.postEditProduct = (req, res) =>  {
+    // const product = new Product(req.body.productId, req.body.title, req.body.imageUrl, req.body.price, req.body.description);
+   const product = new Product(req.params.productId, req.body.title, req.body.imageUrl, req.body.price, req.body.description);
+    product.save();
+    res.redirect('/admin/products');
 };
 
 exports.getProducts = (req, res) => {
