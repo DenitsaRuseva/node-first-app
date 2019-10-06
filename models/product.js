@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const Cart = require('../models/cart');
+
 const rootPath = require('../utill/path');
 
 const p = path.join(rootPath, 'data', 'products.json'); 
@@ -49,7 +51,7 @@ module.exports = class Product {
         getProductsFromFile(cb);
     };
 
-    static findById(id, cb){
+    static findById = (id, cb) => {
         getProductsFromFile(products => {
             const product = products.find(p => p.id === id);
             cb(product);
@@ -57,16 +59,17 @@ module.exports = class Product {
     };
 
     static deleteById(id, cb){
-        this.fetchAll(products => {
+        getProductsFromFile(products => {
             let newProducts = [...products];
-            newProducts = newProducts.filter(p => p.id != id);
+            const product = newProducts.find(p => p.id === id); 
+            newProducts = newProducts.filter(p => p.id !== id);
             fs.writeFile(p, JSON.stringify(newProducts), err => {
                 if(err){
                 console.log(err, 'In deleteById Product method');
-                } else{
+                } else {
                     cb();
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 };

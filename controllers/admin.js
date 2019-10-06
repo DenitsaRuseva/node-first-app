@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Cart = require('../models/cart');
 
 exports.getAddProduct = (req, res) => {
     res.render('admin/edit-product', {
@@ -33,11 +34,26 @@ exports.postEditProduct = (req, res) =>  {
     res.redirect('/admin/products');
 };
 
-exports.deleteProduct = (req, res) => {
-    Product.deleteById(req.params.productId, () => {
-        res.redirect('/admin/products');
+// exports.deleteProduct = (req, res) => {
+//     const productId = req.params.productId;
+//     Product.deleteById(productId, () => {
+//         res.redirect('/admin/products');
+//     });
+// };
+
+
+exports.postDeleteProduct = (req, res) => {
+    const id = req.params.productId;
+    Product.findById(id, product => {
+        Product.deleteById(id, () => {
+            Cart.deleteProductById(id, product.price, () => {
+                res.redirect('/admin/products');
+            });
+        });
     });
 };
+
+
 
 exports.getProducts = (req, res) => {
     Product.fetchAll(products => {
