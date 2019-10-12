@@ -1,15 +1,10 @@
-const Sequelize = require('sequelize');
+const mongodb = require('mongodb');
+const getDb = require('../utill/database').getDb;
 
-const sequelize = require('../utill/database');
+
+class Cart {
 
 
-const Cart = sequelize.define('cart', {
-    id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true
-    }
-});
+}
 
 module.exports = Cart;
