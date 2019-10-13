@@ -54,23 +54,15 @@ exports.getProducts = (req, res) => {
   //   });
   // };
 
-  // exports.postCart = (req, res) => {
-  //   const productId = req.body.productId;
-  //   Product.fetchAll(allProoducts => {
-  //     Product.findById(productId, product => {
-  //       Cart.addProduct(product.id, product.price, (err) => {
-  //         if(err){
-  //           console.log(err);
-  //         } 
-  //         res.render('shop/index', {
-  //         pageTitle: 'Shop',
-  //         path: '/',
-  //         products: allProoducts
-  //       });
-  //       });
-  //     });
-  //   });
-  // };
+  exports.postCart = (req, res) => {
+    const productId = req.body.productId;
+    Product.findById(productId)
+    .then(product => {
+      return req.user.addToCart(product._id, product.price)
+    })
+    .then(result => res.redirect('shop/index'))
+    .catch(err => console.log(err))
+  };
 
   // exports.deleteItemFromCart = (req, res) => {
   //   const productId = req.body.productId;
