@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -38,11 +39,13 @@ app.use(shopRoutes);
 
 app.use(errorController.get404Page);
 
+mongoose.connect('mongodb+srv://denitsa:0603030072@cluster0-xkijh.mongodb.net/shop?retryWrites=true&w=majority')
+.then(result => app.listen(300))
+.catch(err => console.log(err));
 
-
-mongoConnect(() => {
-    app.listen(3000);
-});
+// mongoConnect(() => {
+//     app.listen(3000);
+// });
 
 
 
