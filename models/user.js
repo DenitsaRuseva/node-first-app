@@ -7,7 +7,10 @@ class User {
         this.name = name,
         this.email = email,
         this._id = id ? new mongodb.ObjectID(id) : null,
-        this.cart = cart // {items: [{productId: 0, quantity: 1}, {}]}
+        this.cart = cart ? cart : {
+          items: [],
+          totalPrice: 0
+        } // {items: [{productId: 0, quantity: 1}, {}]}
     };
 
     save(){
@@ -48,9 +51,33 @@ class User {
         );
     };
 
+  getCart() {
+    const productIds = this.cart.items.map(i => {
+      return i.productId;
+    });
+    const db = getDb();
+    return db
+      .collection('products')
+      .find({ _id: { $in: productIds } })
+      .toArray()
+      .then(products => {
+        return products.map(p => {
+          return {
+            ...p,
+            quantity: this.cart.items.find(i => {
+              return i.productId.toString() === p._id.toString();
+            }).quantity
+          };
+        });
+      });
+  }
+
     static findById(id){
         const db = getDb();
-        return db.collection('users').findOne({_id: new mongodb.ObjectID(id)})
+        return db.collection('users')
+        .findOne({_id: new mongodb.ObjectID(id)})
+        .then(user => user)
+        .catch(err => console.log(err));
     };
 }
 
