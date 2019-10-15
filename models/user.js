@@ -30,7 +30,7 @@ const userSchema = new Schema({
 userSchema.methods.addToCart = function(product){
   const updatedCartItems = [...this.cart.items];
   const productIndex = this.cart.items.findIndex(p => {
-    return p._id.toString() === product._id.toString()
+    return p.productId.toString() === product._id.toString()
   });
   if(productIndex >= 0){
     updatedCartItems[productIndex].quantity = updatedCartItems[productIndex].quantity + 1;
@@ -51,13 +51,12 @@ userSchema.methods.removeFromCart = function(productId) {
   this.cart.items = updatedCartItems;
   return this.save();
 };
-// userShema.methods.deleteItemFromCart = function(productId){
-//   const updatedCartItems = this.cart.items.filter(p => {
-//     return p.productId.toString() !== productId.toString();
-//   });
-//   this.cart.items = updatedCartItems;
-//   return this.save();
-// };
+
+
+userSchema.methods.clearCart = function() {
+  this.cart = { items: [] };
+  return this.save();
+};
 
 module.exports = mongoose.model('User', userSchema);
 
