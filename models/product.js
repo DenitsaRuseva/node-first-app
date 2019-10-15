@@ -18,6 +18,10 @@ const productSchima = new Schema({
     description: {
         type: String,
         required: true
+    },
+    userId: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User'
     }
 });
 

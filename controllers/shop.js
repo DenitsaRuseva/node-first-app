@@ -36,26 +36,28 @@ exports.getProducts = (req, res) => {
 
 
 
-//   exports.getCart = (req, res, next) => {
-//     req.user.getCart(products => {
-//       console.log('in')
-//       res.render('shop/cart', {
-//         path: '/cart',
-//         pageTitle: 'Your Cart',
-//         products: products
-//       })
-//     })   
-//   };
+  exports.getCart = (req, res, next) => {
+    req.user.populate('cart.items.productId')
+    .execPopulate()
+    .then(user => {
+      const products = user.cart.items;
+      res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'Your Cart',
+        products: products
+      })
+    });  
+  };
 
-//   exports.postCart = (req, res) => {
-//     const productId = req.body.productId;
-//     Product.findById(productId)
-//     .then(product => {
-//       return req.user.addToCart(product._id, product.price)
-//     })
-//     .then(result => res.redirect('shop/index'))
-//     .catch(err => console.log(err))
-//   };
+  exports.postCart = (req, res) => {
+    const productId = req.body.productId;
+    Product.findById(productId)
+    .then(product => {
+      return req.user.addToCart(product)
+    })
+    .then(result => res.redirect('shop/index'))
+    .catch(err => console.log(err))
+  };
 
 //   exports.postCartDeleteProduct = (req, res, next) => {
 //     const prodId = req.body.productId;
