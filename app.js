@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-    User.findById('5da5992715f10715041700da')
+    User.findById('5da5b0b0b8d1c7070861a516')
       .then(user => {
         req.user = user;
         next();
@@ -36,7 +36,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404Page);
 
-mongoose.connect('mongodb+srv://denitsa:0603030072@cluster0-xkijh.mongodb.net/shop?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://denitsa:0603030072@cluster0-xkijh.mongodb.net/shop?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
 .then(result => {
     User.findOne()
     .then(user => {

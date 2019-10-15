@@ -20,8 +20,9 @@ const productSchima = new Schema({
         required: true
     },
     userId: {
-        type: mongoose.Types.ObjectId,
-        ref: 'User'
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 });
 
