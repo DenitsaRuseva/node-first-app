@@ -8,7 +8,8 @@ exports.getProducts = (req, res) => {
     res.render('shop/product-list', {
       products: products,
       pageTitle: 'All Products',
-      path: '/products'
+      path: '/products',
+      isAuthenticated: req.session.isLoggedIn
     });
   }).catch(err => console.log(err));
   };
@@ -19,7 +20,8 @@ exports.getProducts = (req, res) => {
       res.render('shop/product-list', {
         products: products,
         pageTitle: 'Shop',
-        path: '/'
+        path: '/',
+        isAuthenticated: req.session.isLoggedIn
       });
     }).catch(err => console.log(err));
   };
@@ -30,7 +32,8 @@ exports.getProducts = (req, res) => {
       res.render('shop/product-detail', {
         product: product,
         pageTitle: product.title,
-        path: '/products'
+        path: '/products',
+        isAuthenticated: req.session.isLoggedIn
       });
     }).catch(err => console.log(err));
   };
@@ -45,7 +48,8 @@ exports.getProducts = (req, res) => {
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
-        products: products
+        products: products,
+        isAuthenticated: req.session.isLoggedIn
       })
     });  
   };
@@ -102,7 +106,8 @@ exports.getProducts = (req, res) => {
         res.render('shop/orders', {
           path: '/orders',
           pageTitle: 'Your Orders',
-          orders: orders
+          orders: orders,
+          isAuthenticated: req.session.isLoggedIn
         });
       })
       .catch(err => console.log(err));
