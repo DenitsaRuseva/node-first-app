@@ -37,14 +37,14 @@ app.use(
     })
 );
 
-app.use((req, res, next) => {
-    User.findById('5da5b0b0b8d1c7070861a516')
-      .then(user => {
-        req.user = user;
-        next();
-      })
-      .catch(err => console.log(err));
-  });
+// app.use((req, res, next) => {
+//     User.findById('5da5b0b0b8d1c7070861a516')
+//       .then(user => {
+//         req.user = user;
+//         next();
+//       })
+//       .catch(err => console.log(err));
+//   });
 
 
 
