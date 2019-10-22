@@ -92,7 +92,7 @@ exports.getProducts = (req, res) => {
         });
         const order = new Order({
           user: {
-            name: user.name,
+            email: user.email,
             userId: user
           },
           products: products
