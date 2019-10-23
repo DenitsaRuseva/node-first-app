@@ -54,6 +54,9 @@ exports.postEditProduct = (req, res) =>  {
 
     Product.findById(id)
     .then(product => {
+        if (product.userId.toString() !== req.session.user._id.toString()) {
+            return res.redirect('/');
+        }
         product.title = title;
         product.imageUrl = imageUrl;
         product.description = description;
@@ -73,7 +76,7 @@ exports.postEditProduct = (req, res) =>  {
 
 exports.postDeleteProduct = (req, res) => {
     const id = req.params.productId;
-    Product.findByIdAndDelete(id).then(result => {
+    Product.deleteOne({ _id: id, userId: req.session.user._id }).then(result => {
         console.log('PRODUCT DELETED');
         res.redirect('/admin/products');
     }).catch(err => {
@@ -85,7 +88,7 @@ exports.postDeleteProduct = (req, res) => {
 
 
 exports.getProducts = (req, res) => {
-    Product.find()
+    Product.find({ userId: req.session.user._id })
     .then(products => {
         res.render('admin/product-list', {
             products: products,
