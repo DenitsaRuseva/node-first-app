@@ -88,7 +88,7 @@ exports.postSignup = (req, res) => {
     
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-      res.status(422).render('auth/signup', {
+     return res.status(422).render('auth/signup', {
         path: '/signup',
         pageTitle: 'Signup',
         errorMessage: errors.array()[0].msg
