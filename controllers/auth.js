@@ -32,31 +32,23 @@ exports.getLogin = (req, res) => {
 
 exports.postLogin = (req, res) => {
     const email = req.body.email;
-    const password = req.body.password;
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+      return res.sstatus(422).render('auth/login', {
+          path: '/login',
+          pageTitle: 'Login',
+          errorMessage: errors.array()[0].msg
+      })
+    };
     User.findOne({email: email})
     .then(user => {
-        if(!user){
-            req.flash('error', 'Invalid email!');
-            res.redirect('/login');
-        }
-        bcrypt.compare(password, user.password)
-        .then(result => {
-            if(result){
-                req.session.isLoggedIn = true;
-                req.session.user = user;
-                return req.session.save(err => {
-                    console.log(err);
-                    res.redirect('/');
-                });
-            }
-            req.flash('error', 'Invalid password!');
-            res.redirect('/login');
-        })
-        .catch(err => {
-            console.log(err);
-            req.flash('error', err);
-            res.redirect('/login');
-        });
+      req.session.isLoggedIn = true;
+      req.session.user = user;
+        return req.session.save(err => {
+        res.redirect('/'); 
+        console.log(err);
+      });
     })
     .catch(err => console.log(err));
 };

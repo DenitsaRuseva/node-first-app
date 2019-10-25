@@ -1,5 +1,7 @@
 const express = require('express');
 const { body } = require('express-validator');
+const bcrypt = require('bcryptjs');
+
 
 const authController = require('../controllers/auth');
 const User = require('../models/user');
@@ -8,7 +10,33 @@ const router = express.Router();
 
 
 router.get('/login', authController.getLogin);
-router.post('/login', authController.postLogin);
+router.post('/login', [
+    body('email').isEmail().withMessage('Plese enter a valid email.')
+    .custom( value => {
+        return User.findOne({email: value})
+        .then(existingUser => {
+            if(!existingUser){
+                return Promise.reject('User with this email do not exist')
+            } return true;
+        })
+    }),
+    body('password')
+    .custom((value, {req}) => {
+        return User.findOne({email: req.body.email})
+        .then(existindUser => {
+           return bcrypt.compare(value, existindUser.password)
+            .then(result => {
+                if(result){
+                    return true;
+                } 
+                return Promise.reject('Incorrect password!')
+
+            })
+        })
+    })
+], authController.postLogin);
+
+
 router.post('/logout', authController.postLogout);
 
 router.get('/signup', authController.getSignup);
