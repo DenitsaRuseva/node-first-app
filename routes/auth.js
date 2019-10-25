@@ -10,8 +10,13 @@ const router = express.Router();
 
 
 router.get('/login', authController.getLogin);
+
+
 router.post('/login', [
-    body('email').isEmail().withMessage('Plese enter a valid email.')
+    body('email')
+    .isEmail()
+    .withMessage('Plese enter a valid email address.')
+    .normalizeEmail()
     .custom( value => {
         return User.findOne({email: value})
         .then(existingUser => {
@@ -40,8 +45,12 @@ router.post('/login', [
 router.post('/logout', authController.postLogout);
 
 router.get('/signup', authController.getSignup);
+
 router.post('/signup', [ 
-    body('email').isEmail().withMessage('Plese enter a valid email.')
+    body('email')
+    .isEmail()
+    .withMessage('Plese enter a valid email.')
+    .normalizeEmail()
     .custom( value => {
         return User.findOne({email: value})
         .then(existingUser => {
@@ -50,8 +59,14 @@ router.post('/signup', [
         };
     })
     }),
-    body('password', 'Please enter a password with only numbers and text and at least 5 characters.').isLength({min: 6}).isAlphanumeric(),
-    body('confirmPassword').custom((value, {req}) => {
+    body('password', 
+    'Please enter a password with only numbers and text and at least 5 characters.')
+    .isLength({min: 6})
+    .isAlphanumeric()
+    .trim(),
+    body('confirmPassword')
+    .trim()
+    .custom((value, {req}) => {
         if(value !== req.body.password){
             throw new Error('Passwords have to match!');
         } return true;
