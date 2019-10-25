@@ -35,7 +35,7 @@ exports.getLogin = (req, res) => {
 };
 
 
-exports.postLogin = (req, res) => {
+exports.postLogin = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     const errors = validationResult(req);
@@ -61,7 +61,10 @@ exports.postLogin = (req, res) => {
         console.log(err);
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      return next(error);
+  });
 };
 
 exports.postLogout = (req, res) => {
@@ -91,7 +94,7 @@ exports.getSignup = (req, res) => {
     });
 };
 
-exports.postSignup = (req, res) => {
+exports.postSignup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
@@ -120,7 +123,10 @@ exports.postSignup = (req, res) => {
             return user.save()
             .then(result => res.redirect('/login'));
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      return next(error);
+  });
 };
 
 exports.getReset = (req, res, next) => {
@@ -167,8 +173,9 @@ exports.getReset = (req, res, next) => {
           });
         })
         .catch(err => {
-          console.log(err);
-        });
+          const error = new Error(err);
+          return next(error);
+      });
     });
   };
   
@@ -191,8 +198,9 @@ exports.getReset = (req, res, next) => {
         });
       })
       .catch(err => {
-        console.log(err);
-      });
+        const error = new Error(err);
+        return next(error);
+    });
   };
   
   exports.postNewPassword = (req, res, next) => {
@@ -220,7 +228,8 @@ exports.getReset = (req, res, next) => {
         res.redirect('/login');
       })
       .catch(err => {
-        console.log(err);
-      });
+        const error = new Error(err);
+        return next(error);
+    });
   };
 

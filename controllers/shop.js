@@ -4,28 +4,35 @@ const User = require('../models/user');
 
 
 
-exports.getProducts = (req, res) => {
+exports.getProducts = (req, res, next) => {
   Product.find().then(products => {
     res.render('shop/product-list', {
       products: products,
       pageTitle: 'All Products',
       path: '/products'
     });
-  }).catch(err => console.log(err));
+  }).catch(err => {
+    const error = new Error(err);
+    return next(error);
+});
   };
 
 
-    exports.getIndex = (req, res) => {
+    exports.getIndex = (req, res, next) => {
     Product.find().then(products => {
       res.render('shop/product-list', {
         products: products,
         pageTitle: 'Shop',
         path: '/'
       });
-    }).catch(err => console.log(err));
+    })
+    .catch(err => {
+      const error = new Error(err);
+      return next(error);
+  });
   };
 
-  exports.getProduct = (req, res) => {
+  exports.getProduct = (req, res, next) => {
     const productId = req.params.productId;
     Product.findById(productId).then(product => {
       res.render('shop/product-detail', {
@@ -33,7 +40,11 @@ exports.getProducts = (req, res) => {
         pageTitle: product.title,
         path: '/products'
       });
-    }).catch(err => console.log(err));
+    })
+    .catch(err => {
+      const error = new Error(err);
+      return next(error);
+  });
   };
 
 
@@ -52,11 +63,14 @@ exports.getProducts = (req, res) => {
         })
       });  
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      return next(error);
+  });
     
   };
 
-  exports.postCart = (req, res) => {
+  exports.postCart = (req, res, next) => {
     const productId = req.body.productId;
     Product.findById(productId)
     .then(product => {
@@ -64,7 +78,10 @@ exports.getProducts = (req, res) => {
      .then(user => user.addToCart(product));
     })
     .then(result => res.redirect('/'))
-    .catch(err => console.log(err))
+    .catch(err => {
+      const error = new Error(err);
+      return next(error);
+  });
   };
 
   exports.postCartDeleteProduct = (req, res, next) => {
@@ -74,7 +91,10 @@ exports.getProducts = (req, res) => {
       user.removeFromCart(prodId)
       .then(result => res.redirect('/'));
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      return next(error);
+  });
   };
   
   exports.postOrder = (req, res, next) => {
@@ -102,7 +122,10 @@ exports.getProducts = (req, res) => {
         res.redirect('/orders');
       })
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      return next(error);
+  });
   };
   
   exports.getOrders = (req, res, next) => {
@@ -114,7 +137,10 @@ exports.getProducts = (req, res) => {
           orders: orders
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        const error = new Error(err);
+        return next(error);
+    });
   };
 
 //   // exports.getCheckout = (res, req) => {

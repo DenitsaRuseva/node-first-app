@@ -41,7 +41,7 @@ app.use(
 );
 
 app.use(csrfProtection);
-app.use(flash());
+// app.use(flash());
 
 // app.use((req, res, next) => {
 //     User.findById('5da5b0b0b8d1c7070861a516')
@@ -63,6 +63,10 @@ app.use(shopRoutes);
 app.use(authRoutes);
 
 app.use(errorController.get404Page);
+
+app.use((error, req, res, next) => {
+    res.redirect('/500');
+});
 
 mongoose.connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(result => {
