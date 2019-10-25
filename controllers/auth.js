@@ -16,29 +16,40 @@ const transporter = nodemailer.createTransport(
   );
 
 exports.getLogin = (req, res) => {
-    let message = req.flash('error');
-    if (message.length > 0) {
-        message = message[0];
-    } else {
-        message = null;
-    }
+    // let message = req.flash('error');
+    // if (message.length > 0) {
+    //     message = message[0];
+    // } else {
+    //     message = null;
+    // }
     res.render('auth/login', {
         path: '/login',
         pageTitle: 'Login',
-        errorMessage: message
+        errorMessage: null,
+        oldInput: {
+          email: '',
+          password: ''
+        },
+        validationErrors: []
     });
 };
 
 
 exports.postLogin = (req, res) => {
     const email = req.body.email;
+    const password = req.body.password;
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
-      return res.sstatus(422).render('auth/login', {
+      return res.status(422).render('auth/login', {
           path: '/login',
           pageTitle: 'Login',
-          errorMessage: errors.array()[0].msg
+          errorMessage: errors.array()[0].msg,
+          oldInput: {
+            email: email,
+            password: password
+          },
+          validationErrors: errors.array()
       })
     };
     User.findOne({email: email})
@@ -61,29 +72,42 @@ exports.postLogout = (req, res) => {
 };
 
 exports.getSignup = (req, res) => {
-    let message = req.flash('error');
-    if(message.length > 0){
-        message = message[0]
-    } else {
-        message = null;
-    }
+    // let message = req.flash('error');
+    // if(message.length > 0){
+    //     message = message[0]
+    // } else {
+    //     message = null;
+    // }
     res.render('auth/signup', {
         path: '/signup',
         pageTitle: 'Signup',
-        errorMessage: message
+        errorMessage: null,
+        oldInput: {
+          email: '',
+          password: '',
+          confirmPassword: ''
+        },
+        validationErrors: []
     });
 };
 
 exports.postSignup = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
+    const confirmPassword = req.body.confirmPassword;
     
     const errors = validationResult(req);
     if(!errors.isEmpty()){
      return res.status(422).render('auth/signup', {
         path: '/signup',
         pageTitle: 'Signup',
-        errorMessage: errors.array()[0].msg
+        errorMessage: errors.array()[0].msg,
+        oldInput: {
+          password: password,
+          email: email,
+          confirmPassword: confirmPassword
+        },
+        validationErrors: errors.array()
     });
     };
     bcrypt.hash(password, 12)
